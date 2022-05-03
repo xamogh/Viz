@@ -1,0 +1,16 @@
+.home__root {
+  padding: 16px;
+}
+
+@media screen and (max-width: 480px) {
+  .home__root {
+    padding: 4px;
+  }
+}
+
+.home__card {
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

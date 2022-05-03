@@ -1,0 +1,66 @@
+.sort__board1-wrapper {
+  display: flex;
+}
+
+.sort__default {
+  background-color: #a7c7e7;
+  border: 1px solid grey;
+}
+
+.sort__comparing {
+  background-color: #c1e1c1;
+  border: 1px solid grey;
+}
+
+.sort__swapping {
+  background-color: #c1e1c1;
+  border: 4px solid black;
+}
+
+.sort__sorted {
+  background-color: #77dd77 !important;
+  border: 1px solid grey;
+}
+
+.sort__controls {
+  padding: 8px;
+  text-align: left;
+}
+
+.sort__control_buttons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.sort__select {
+  height: 40px;
+  width: 100%;
+}
+
+.sort__legend {
+  text-align: left;
+  margin-left: 64px;
+  padding: 0px 32px 16px 32px;
+  border: 1px solid grey;
+  margin-top: 16px;
+  .sort__legend_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    div {
+      height: 20px;
+      width: 20px;
+    }
+  }
+}
+
+.sort__code {
+  padding-top: 1px;
+  p {
+    padding: 16px 16px;
+    white-space: pre-wrap;
+    text-align: left;
+  }
+}
