@@ -208,6 +208,7 @@ export default function BubbleSort() {
               }}
               style={{ marginLeft: "8px" }}
             >
+              <option value={0.5}>0.5x speed</option>
               <option value={1}>1x speed</option>
               <option value={1.5}>1.5x speed</option>
               <option value={2}>2x speed</option>
@@ -278,7 +279,7 @@ export default function BubbleSort() {
           <h5 style={{ textAlign: "center" }}>Legend</h5>
           <div className="sort__legend_item">
             <div className="sort__default" />
-            <p>Unsorted Node</p>
+            <p>Unsorted Nodes</p>
           </div>
           <div className="sort__legend_item">
             <div className="sort__comparing" />
