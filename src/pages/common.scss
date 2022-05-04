@@ -41,17 +41,20 @@
 
 .sort__legend {
   text-align: left;
-  margin-left: 64px;
-  padding: 0px 32px 16px 32px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   border: 1px solid grey;
-  margin-top: 16px;
   .sort__legend_item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    margin-left: 8px;
     div {
       height: 20px;
       width: 20px;
+    }
+
+    p {
+      margin-left: 8px;
     }
   }
 }

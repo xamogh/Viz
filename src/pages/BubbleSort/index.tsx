@@ -1,6 +1,10 @@
 import classNames from "classnames";
 import * as React from "react";
 import { Flipper, Flipped } from "react-flip-toolkit";
+import CodeMapper from "../../components/CodeMapper";
+import Controls from "../../components/Controls";
+import Legend from "../../components/Legend";
+import Navbar from "../../components/Navbar";
 import "../common.scss";
 
 const code = {
@@ -8,10 +12,6 @@ const code = {
   1: "    if (i)th element > (i + 1)th element",
   2: "        swap(i, i + 1)"
 };
-
-const cc = Object.entries(code)
-  .map(([k, v]) => v)
-  .join("\n");
 
 type GeneratorFrame = { sorted: number } | Frame | { codeIndex: number };
 
@@ -123,6 +123,7 @@ export default function BubbleSort() {
 
   const onStart = (arr: Array<number>, iv: number) => {
     setStarted(true);
+    setSorted([]);
     clearAllInterval();
     const iterator = sortFunc(arr);
     lastIterator.current = iterator;
@@ -147,28 +148,28 @@ export default function BubbleSort() {
     }, 200 / iv);
   };
 
-  const onReset = () => {
-    setCodeIndex(0);
+  const resetStates = () => {
     setStarted(false);
     setPaused(false);
-    clearAllInterval();
-    lastIterator.current = null;
-    setState(generateFrames(size));
     setSwapping([null, null]);
     setComparing([null, null]);
     setSorted([]);
+  };
+
+  const onReset = () => {
+    resetStates();
+    setCodeIndex(0);
+    clearAllInterval();
+    lastIterator.current = null;
+    setState(generateFrames(size));
   };
 
   const onSizeChange = (size: number) => {
     setSize(size);
     setState(generateFrames(size));
     setCodeIndex(0);
-    setStarted(false);
-    setPaused(false);
     clearAllInterval();
-    setSwapping([null, null]);
-    setComparing([null, null]);
-    setSorted([]);
+    resetStates();
   };
 
   const onSpeedChange = (
@@ -184,129 +185,52 @@ export default function BubbleSort() {
   };
 
   return (
-    <div className="row">
-      <div className="col s12 m12 l8 xl8">
-        <h4>Bubble Sort</h4>
-        <div className="card row sort__controls">
-          <div className="col s12 m6" style={{ display: "flex" }}>
-            <select
-              className="browser-default sort__select"
-              value={size}
-              onChange={(e) => {
-                onSizeChange(Number(e.target.value));
-              }}
-            >
-              <option value={10}>10 items</option>
-              <option value={15}>15 items</option>
-              <option value={20}>20 items</option>
-            </select>
-            <select
-              className="browser-default sort__select"
-              value={speed}
-              onChange={(e) => {
-                onSpeedChange(Number(e.target.value), lastIterator.current);
-              }}
-              style={{ marginLeft: "8px" }}
-            >
-              <option value={0.5}>0.5x speed</option>
-              <option value={1}>1x speed</option>
-              <option value={1.5}>1.5x speed</option>
-              <option value={2}>2x speed</option>
-            </select>
-          </div>
-          <div className="col s12 m6 sort__control_buttons">
-            <button
-              className="waves-effect green darken-2 waves-light btn-small"
-              onClick={() => onStart(state, speed)}
-              disabled={started}
-            >
-              Start
-            </button>
-            <button
-              className="waves-effect red darken-2 waves-light btn-small"
-              onClick={onReset}
-            >
-              Reset
-            </button>
-            {started && (
-              <button
-                className="waves-effect deep-purple darken-2 waves-light btn-small"
-                onClick={() => onPause()}
-                disabled={paused}
-              >
-                Pause
-              </button>
-            )}
-            {paused && (
-              <button
-                className="waves-effect deep-purple accent-3 darken-2 waves-light btn-small"
-                onClick={() => onResume(lastIterator.current, speed)}
-              >
-                Resume
-              </button>
-            )}
-          </div>
+    <div>
+      <Navbar />
+      <div className="row">
+        <div className="col s12 m12 l8 xl8">
+          <Controls
+            size={size}
+            speed={speed}
+            started={started}
+            paused={paused}
+            onSizeChange={(v) => onSizeChange(v)}
+            onSpeedChange={(v) => onSpeedChange(v, lastIterator.current)}
+            onStart={() => onStart(state, speed)}
+            onPause={() => onPause()}
+            onReset={() => onReset()}
+            onResume={() => onResume(lastIterator.current, speed)}
+          />
+          <Flipper
+            flipKey={`board1-${state.join("")}`}
+            spring={{ stiffness: 1000, damping: 100 }}
+          >
+            <div className="sort__board1-wrapper">
+              {state.map((item, i) => (
+                <Flipped key={item} flipId={item}>
+                  <div
+                    className={classNames({
+                      sort__default: true,
+                      sort__comparing: comparing.includes(i),
+                      sort__sorted: sorted.includes(i),
+                      sort__swapping: swapping.includes(i)
+                    })}
+                    style={{
+                      height: item,
+                      width: `calc(100%/${size} - 4px)`,
+                      marginLeft: "4px"
+                    }}
+                  >
+                    {item}
+                  </div>
+                </Flipped>
+              ))}
+            </div>
+          </Flipper>
         </div>
-        <Flipper
-          flipKey={`board1-${state.join("")}`}
-          spring={{ stiffness: 1000, damping: 100 }}
-        >
-          <div className="sort__board1-wrapper">
-            {state.map((item, i) => (
-              <Flipped key={item} flipId={item}>
-                <div
-                  className={classNames({
-                    sort__default: true,
-                    sort__comparing: comparing.includes(i),
-                    sort__sorted: sorted.includes(i),
-                    sort__swapping: swapping.includes(i)
-                  })}
-                  style={{
-                    height: item,
-                    width: `calc(100%/${size} - 4px)`,
-                    marginLeft: "4px"
-                  }}
-                >
-                  {item}
-                </div>
-              </Flipped>
-            ))}
-          </div>
-        </Flipper>
-      </div>
-      <div className="col s12 m12 l4 xl4">
-        <div className="sort__legend card purple lighten-4 hide-on-small-only">
-          <h5 style={{ textAlign: "center" }}>Legend</h5>
-          <div className="sort__legend_item">
-            <div className="sort__default" />
-            <p>Unsorted Nodes</p>
-          </div>
-          <div className="sort__legend_item">
-            <div className="sort__comparing" />
-            <p>Comparing Nodes</p>
-          </div>
-          <div className="sort__legend_item">
-            <div className="sort__swapping" />
-            <p>Swapping Nodes</p>
-          </div>
-          <div className="sort__legend_item">
-            <div className="sort__sorted" />
-            <p>Sorted Nodes</p>
-          </div>
-        </div>
-
-        <div className="sort__code card">
-          <h5>Code</h5>
-          {Object.entries(code).map(([k, v]) => (
-            <p
-              style={{
-                backgroundColor: codeIndex === Number(k) ? "black" : undefined,
-                color: codeIndex === Number(k) ? "white" : undefined
-              }}
-            >
-              {v}
-            </p>
-          ))}
+        <div className="col s12 m12 l4 xl4">
+          <Legend />
+          <CodeMapper code={code} codeIndex={codeIndex} />
         </div>
       </div>
     </div>
